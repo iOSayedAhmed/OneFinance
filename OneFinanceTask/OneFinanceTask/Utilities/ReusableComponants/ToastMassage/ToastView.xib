@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ToastView" customModule="OneFinanceTask" customModuleProvider="target">
+            <connections>
+                <outlet property="contentView" destination="ojf-WG-7Hq" id="YnK-1w-p37"/>
+                <outlet property="errorLabel" destination="1JQ-Zm-QJh" id="f2r-5R-Sgw"/>
+                <outlet property="imageView" destination="va0-ie-692" id="6lf-BC-uwB"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="ojf-WG-7Hq">
+            <rect key="frame" x="0.0" y="0.0" width="449" height="91"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="va0-ie-692">
+                    <rect key="frame" x="10" y="25.666666666666671" width="40" height="40"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="40" id="RrM-pB-iUg"/>
+                        <constraint firstAttribute="height" constant="40" id="auz-4x-3oK"/>
+                    </constraints>
+                </imageView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please fill all text fields!" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1JQ-Zm-QJh">
+                    <rect key="frame" x="70" y="36" width="359" height="19.333333333333329"/>
+                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="16"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="TeP-8n-Q3a"/>
+            <color key="backgroundColor" systemColor="systemRedColor"/>
+            <constraints>
+                <constraint firstItem="1JQ-Zm-QJh" firstAttribute="centerY" secondItem="ojf-WG-7Hq" secondAttribute="centerY" id="KSm-xc-Amv"/>
+                <constraint firstItem="va0-ie-692" firstAttribute="leading" secondItem="TeP-8n-Q3a" secondAttribute="leading" constant="10" id="Pdq-IZ-FsR"/>
+                <constraint firstItem="1JQ-Zm-QJh" firstAttribute="leading" secondItem="va0-ie-692" secondAttribute="trailing" constant="20" id="eEV-5l-Zoy"/>
+                <constraint firstItem="va0-ie-692" firstAttribute="centerY" secondItem="ojf-WG-7Hq" secondAttribute="centerY" id="lXH-eK-VIM"/>
+                <constraint firstItem="TeP-8n-Q3a" firstAttribute="trailing" secondItem="1JQ-Zm-QJh" secondAttribute="trailing" constant="20" id="n7c-fa-cxx"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="146.92307692307691" y="287.55924170616112"/>
+        </view>
+    </objects>
+    <resources>
+        <systemColor name="systemRedColor">
+            <color red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>
