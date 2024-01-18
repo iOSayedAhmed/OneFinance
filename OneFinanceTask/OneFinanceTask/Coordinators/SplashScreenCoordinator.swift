@@ -25,10 +25,39 @@ final class SplashScreenCoordinator:Coordinator {
     
     func start() {
         let splashScreenVC = SplashScreenVC()
-//        let loginViewModel = LoginViewModel()
-//        loginViewModel.coordinator = self
-//        splashScreenVC.viewModel = loginViewModel
+        let splashScreenViewModel = SplashViewModel()
+        splashScreenViewModel.coordinator = self
+        splashScreenVC.viewModel = splashScreenViewModel
         navigationController.setViewControllers([splashScreenVC], animated: true)
     }
   
+    func startLoginCoordinator(){
+        let loginCoordinator = LoginCoordinator(navigationController: navigationController)
+        childCoordinators.append(loginCoordinator)
+        loginCoordinator.start()
+    }
+    
+    
+    func startHomeCoordinator(){
+        let homeCoordinator = HomeCoordinator(navigationController: navigationController,userData: UserData())
+        childCoordinators.append(homeCoordinator)
+        homeCoordinator.start()
+    }
+    
+    func startLoginOrHome(){
+        if isUserLoggedIn() {
+            startHomeCoordinator()
+        }else{
+            startLoginCoordinator()
+        }
+    }
+    
+    
+    
+    func isUserLoggedIn() -> Bool {
+        guard let isLoggedIn: Bool = UserDefaults.standard.getObject(forKey: .userLoggedin) else {
+            return false
+        }
+        return isLoggedIn
+    }
 }
