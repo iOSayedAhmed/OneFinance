@@ -15,7 +15,8 @@ class ProductDetailsVC: UIViewController {
     @IBOutlet private weak var descLabel: PaddedLabel!
     @IBOutlet private weak var priceLabel: PaddedLabel!
     @IBOutlet private weak var rateLabel: PaddedLabel!
-    
+    @IBOutlet private weak var loveButton: UIButton!
+    @IBOutlet private weak var backButton: UIButton!
     
     private let ViewModel:ProductDetailsViewModel!
     var cartButton = UIButton(type: .custom)
@@ -37,7 +38,7 @@ class ProductDetailsVC: UIViewController {
     
     convenience required init() {
         let defaultViewModel = ProductDetailsViewModel()
-        self.init(viewModel: defaultViewModel, nibName: "\(HomeVC.self)")
+        self.init(viewModel: defaultViewModel, nibName: "\(ProductDetailsVC.self)")
     }
     
     required init?(coder: NSCoder) {
@@ -46,19 +47,7 @@ class ProductDetailsVC: UIViewController {
 
     
     private func setupView(){
-        setupNavigationBar()
-    }
-    private func setupNavigationBar(){
-        self.navigationController?.navigationBar.tintColor = UIColor.button
-        
-        // Create images
-        let navigationRightItemImage = UIImage(systemName: "heart")?.withTintColor(.button, renderingMode: .alwaysOriginal)
-        cartButton.frame = CGRect(x: 0.0, y: 0.0, width: 40, height: 40)
-        cartButton.setImage(navigationRightItemImage, for: .normal)
-        cartButton.addTarget(self, action: #selector(didTapCartButton), for: UIControl.Event.touchUpInside)
-        let cartBarItem = UIBarButtonItem(customView: cartButton)
-        
-        navigationItem.rightBarButtonItems = [cartBarItem]
+        navigationController?.navigationBar.isHidden = true
     }
     private func setData(from product:ProductModel){
         imageView.setImageWithLoading(url: product.image ?? "")
@@ -79,19 +68,29 @@ class ProductDetailsVC: UIViewController {
             guard let self else {return}
             self.handleError(errorMessage)
         }).disposed(by: disposeBag)
+        
+        backButton.rx.tap.subscribe {[weak self] _ in
+            guard let self else {return}
+            ViewModel.coordinator?.dismissProductDetails()
+        }.disposed(by: disposeBag)
+        
+        loveButton.rx.tap.subscribe {[weak self] _ in
+            guard let self else {return}
+            didTaploveButton()
+        }.disposed(by: disposeBag)
     }
     
     private func handleError(_ errorMessage: String) {
         ToastManager.shared.showToast(message: errorMessage, type: .error, view: self.view)
     }
     
-    @objc func didTapCartButton() {
+     func didTaploveButton() {
         isLoved.toggle()
         guard let heartFilled = UIImage(systemName: "heart.fill")?.withTintColor(.button, renderingMode: .alwaysOriginal) , let heartEmpty = UIImage(systemName: "heart")?.withTintColor(.button, renderingMode: .alwaysOriginal)else {return}
         print(isLoved)
         var image = UIImage()
         image = isLoved ? heartFilled : heartEmpty
-        cartButton.setImage(image, for: .normal)
+        loveButton.setBackgroundImage(image, for: .normal)
     }
 
 }

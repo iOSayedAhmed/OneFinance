@@ -12,6 +12,7 @@ import RxSwift
 
 enum NetworkError: Error {
     case connectivity
+    case Unauthorized(message:String)
     case serverError(statusCode: Int)
     case parsingError
     case customError(message: String)
@@ -19,61 +20,55 @@ enum NetworkError: Error {
 }
 
 protocol NetworkService {
-    func request<T: Decodable>(_ endpoint: Endpoint) -> Single<T>
+    func request<T: Decodable>(_ endpoint: Endpoint) -> Observable<T>
 }
+
 
 extension NetworkService {
-    func request<T: Decodable>(_ endpoint: Endpoint) -> Single<T>
-    {
-        return Single.create { single in
-                let request = AF.request(endpoint)
-                   .responseDecodable(of:T.self){ response in
-                       switch response.result {
-                       case .success(let data):
-                           print(data)
-                           single(.success(data))
-                       case .failure(let error):
-                           print(error)
-                           single(.failure(error))
-                       }
+    func request<T: Decodable>(_ endpoint: Endpoint) -> Observable<T> {
+        return Observable.create { observer in
+            let request = AF.request(endpoint)
+                .validate(statusCode: 200..<300)
+                .responseDecodable(of: T.self) { response in
+                    switch response.result {
+                    case .success(let data):
+                        observer.onNext(data)
+                        observer.onCompleted()
+                    case .failure(let error):
+                        print(error)
+                        if let statusCode = response.response?.statusCode {
+                            switch statusCode {
+                            case 400:
+                                // Handle specific status code, e.g., wrong password
+                                if let data = response.data,
+                                   let serverError = try? JSONDecoder().decode(ServerErrorMessage.self, from: data) {
+                                    observer.onError(NetworkError.customError(message: serverError.message))
+                                } else {
+                                    observer.onError(NetworkError.customError(message: "username and password are not provided in JSON format"))
+                                }
+                            case 401:
+                                if let data = response.data,
+                                   let serverError = try? JSONDecoder().decode(ServerErrorMessage.self, from: data) {
+                                    observer.onError(NetworkError.customError(message: serverError.message))
+                                } else {
+                                    observer.onError(NetworkError.Unauthorized(message: "username or password is incorrect"))
+                                }
+                            default:
+                                observer.onError(NetworkError.customError(message: "An error occurred: \(statusCode)"))
+                            }
+                        } else {
+                            observer.onError(NetworkError.connectivity)
+                        }
+                    }
+                }
+            return Disposables.create {
+                request.cancel()
             }
-            return Disposables.create()
         }
-
     }
-    
-//    func request<T: Decodable>(_ endpoint: Endpoint) -> Single<T> {
-//        return Single.create { single in
-//            let request = AF.request(endpoint)
-//                .validate(statusCode: 200..<300)  // Status code validation
-//                .responseDecodable(of: T.self) { response in
-//                    switch response.result {
-//                    case .success(let data):
-//                        print(data)
-//                        single(.success(data))
-//                    case .failure(let error):
-//                        
-//                        if let afError = error.asAFError {
-//                            switch afError {
-//                            case .responseValidationFailed(reason: let reason):
-//                                switch reason {
-//                                case .unacceptableStatusCode(code: let code):
-//                                    single(.failure(NetworkError.serverError(statusCode: code)))
-//                                default:
-//                                    single(.failure(NetworkError.customError(message: error.localizedDescription)))
-//                                }
-//                            default:
-//                                single(.failure(NetworkError.customError(message: error.localizedDescription)))
-//                            }
-//                        } else {
-//                            // Handle other errors (like connectivity)
-//                            single(.failure(NetworkError.connectivity))
-//                        }
-//                    }
-//                }
-//            return Disposables.create {
-//                request.cancel()
-//            }
-//        }
-//    }
 }
+
+struct ServerErrorMessage: Decodable {
+    let message: String
+}
+

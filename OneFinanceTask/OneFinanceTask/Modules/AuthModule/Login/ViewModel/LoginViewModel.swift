@@ -11,7 +11,7 @@ import RxSwift
 import RxRelay
 
 protocol LoginViewModelProtocol{
-    func login(email:String,password:String,deviceToken:String)
+    func login(username:String,password:String)
     func didUserLoggedIn(userData:UserData)
     func didTappedOnSignup()
 }
@@ -25,7 +25,7 @@ final class LoginViewModel:LoginViewModelProtocol {
     private let loginResultSubject = PublishSubject<LoginModel>()
     
     let isLoading = BehaviorRelay<Bool>(value: false)
-    // Observable for outside classes to subscribe to
+    
        var loginResult: Observable<LoginModel> {
            return loginResultSubject.asObservable()
        }
@@ -36,25 +36,31 @@ final class LoginViewModel:LoginViewModelProtocol {
     }
     
     
-    func login(email: String, password: String, deviceToken: String) {
+    func login(username: String, password: String) {
         isLoading.accept(true)
         guard let networkService = networkService else {
-               print("NetworkService is nil")
-               return
-           }
-        let params = ["email":email,"password":password,"device_token":deviceToken]
+            print("NetworkService is nil")
+            return
+        }
+        let params = ["username": username, "password": password]
         
         networkService.request(Endpoints.login(parameters: params))
-            .subscribe(onSuccess: { [weak self] (loginModel:LoginModel) in
-                guard let self  else {return}
-                self.isLoading.accept(false)
-                self.loginResultSubject.onNext(loginModel)
-            },onFailure: { error in
-                self.isLoading.accept(false)
-                print(error)
-            })
+            .subscribe(
+                onNext: { [weak self] (loginModel: LoginModel) in
+                    guard let self = self else { return }
+                    self.isLoading.accept(false)
+                    self.loginResultSubject.onNext(loginModel)
+                },
+                onError: { [weak self] error in
+                    guard let self = self else { return }
+                    self.isLoading.accept(false)
+                    self.loginResultSubject.onError(error)
+                    print(error)
+                }
+            )
             .disposed(by: disposeBag)
     }
+
     
     func didUserLoggedIn(userData:UserData){
         coordinator?.startHomeCoordinator(userData: userData)

@@ -21,3 +21,5 @@ struct RatingModel:Codable{
     let rate:Double?
     let count:Int?
 }
+
+

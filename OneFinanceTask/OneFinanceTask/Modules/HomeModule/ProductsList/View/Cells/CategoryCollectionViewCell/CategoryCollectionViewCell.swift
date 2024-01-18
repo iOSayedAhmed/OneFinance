@@ -18,11 +18,11 @@ class CategoryCollectionViewCell: UICollectionViewCell {
 
     override var isSelected: Bool {
             didSet {
-                self.containerView.backgroundColor = isSelected ? UIColor.gray.withAlphaComponent(0.7) : UIColor.systemBackground
-                self.titleLabel.textColor = isSelected ? UIColor.systemBackground : UIColor.label
+                setupSelectedCell()
             }
           }
         
+    
     
     private func setupUI(){
         containerView.layer.cornerRadius = 12
@@ -34,7 +34,12 @@ class CategoryCollectionViewCell: UICollectionViewCell {
         titleLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
     }
     
-    func setupCell(title:String){
+    private func setupSelectedCell(){
+        self.containerView.backgroundColor = isSelected ? UIColor.button : UIColor.systemBackground
+        self.titleLabel.textColor = isSelected ? UIColor.systemBackground : UIColor.label
+    }
+    
+    func setupCell(title:String,index:Int){
         titleLabel.text = title
     }
     

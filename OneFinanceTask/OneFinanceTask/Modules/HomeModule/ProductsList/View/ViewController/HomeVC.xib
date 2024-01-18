@@ -15,6 +15,7 @@
                 <outlet property="categoryCollectionView" destination="72r-OU-FDh" id="apB-us-tdy"/>
                 <outlet property="collectionView" destination="P3D-ea-ukX" id="mtj-z8-AGR"/>
                 <outlet property="mainStackView" destination="o9W-Va-qVv" id="5KW-TQ-0S7"/>
+                <outlet property="searchTextField" destination="WJJ-uz-7p6" id="sbl-qv-1YP"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -66,7 +67,7 @@
                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c8C-bL-VS7" customClass="InnerShadowView" customModule="OneFinanceTask" customModuleProvider="target">
                                                             <rect key="frame" x="9.3333333333333428" y="0.0" width="334.33333333333326" height="55"/>
                                                             <subviews>
-                                                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Search ..." textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="WJJ-uz-7p6">
+                                                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Search by name ..." textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="WJJ-uz-7p6">
                                                                     <rect key="frame" x="41" y="5" width="285.33333333333331" height="45"/>
                                                                     <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="16"/>
                                                                     <textInputTraits key="textInputTraits"/>
@@ -141,7 +142,7 @@
                         </stackView>
                     </subviews>
                     <viewLayoutGuide key="safeArea" id="4Oo-tt-dtP"/>
-                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <constraints>
                         <constraint firstItem="o9W-Va-qVv" firstAttribute="leading" secondItem="UqL-ku-23U" secondAttribute="leading" id="7Yh-SQ-a0e"/>
                         <constraint firstAttribute="bottom" secondItem="o9W-Va-qVv" secondAttribute="bottom" id="HnY-WI-2bU"/>

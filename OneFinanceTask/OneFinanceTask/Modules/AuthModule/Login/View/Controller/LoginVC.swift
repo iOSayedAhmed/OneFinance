@@ -70,7 +70,7 @@ class LoginVC: UIViewController {
         setPlaceholders()
     }
     private func setPlaceholders(){
-        emailTextField.placeholder = "Write your email"
+        emailTextField.placeholder = "Write your username"
         passwordTextField.placeholder = "Write 8 character at least"
     }
     
@@ -107,9 +107,9 @@ class LoginVC: UIViewController {
                 .debug("Login Button Tap")
                 .throttle(RxTimeInterval.milliseconds(300), scheduler: MainScheduler.instance)
                 .withLatestFrom(Observable.combineLatest(emailTextField.rx.text.orEmpty, passwordTextField.rx.text.orEmpty))
-                .subscribe(onNext: { [weak self] email, password in
+                .subscribe(onNext: { [weak self] userName, password in
                     let deviceToken = "12233454566787877"
-                    self?.loginViewModel.login(email: email, password: password, deviceToken: deviceToken)
+                    self?.loginViewModel.login(username: userName, password: password)
                 })
                 .disposed(by: disposeBag)
         
@@ -122,19 +122,18 @@ class LoginVC: UIViewController {
             loginViewModel.loginResult
                 .subscribe(on: MainScheduler.instance)
                 .subscribe(onNext: { [weak self] loginModel in
-                    guard let self , let userData = loginModel.data else {return}
+                    guard let self else {return}
                     print("Login successful: \(loginModel)")
-                    if loginModel.success ?? false && loginModel.responseCode ?? 0 == 200 {
                         UserDefaults.standard.setObject(true, forKey: .userLoggedin)
-                        //Save User Name To show it i
-                        UserDefaults.standard.setCodableObject(userData, forKey: .saveUserData)
+                        //Save User Name To show it in home
+                    let userData = UserData(token: loginModel.token ?? "" , id: 1, name: "Elsayed Ahmed")
+                    UserDefaults.standard.setCodableObject(userData, forKey: .saveUserData)
                         self.loginViewModel.didUserLoggedIn(userData: userData)
-                    }else{
-                        showMessage(typeMessage: .error, message: loginModel.message ?? "")
-                    }
                     
-                }, onError: { error in
+                }, onError: {[weak self] error in
+                    guard let self else {return}
                     print("Login error: \(error)")
+                    showMessage(typeMessage: .error, message: "\(error)")
                 })
                 .disposed(by: disposeBag)
         

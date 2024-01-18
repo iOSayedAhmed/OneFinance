@@ -17,4 +17,5 @@ enum URLPaths {
     static let productsDetails = "/products/"
     static let addProduct = "/products"
     static let allCategories = "/products/categories"
+    static let productsByCategory = "/products/category"
 }

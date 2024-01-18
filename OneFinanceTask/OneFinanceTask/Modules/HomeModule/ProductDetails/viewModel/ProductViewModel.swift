@@ -12,9 +12,12 @@ import RxRelay
 
 protocol ProductDetailsViewModelType{
     func getProductDetails()
+    func dismissProductDetails()
 }
 
 final class ProductDetailsViewModel:ProductDetailsViewModelType {
+    
+    
    
     var coordinator:ProductDetailsCoordinator?
     var networkService:NetworkService?
@@ -37,13 +40,22 @@ final class ProductDetailsViewModel:ProductDetailsViewModelType {
     
     func getProductDetails() {
         networkService?.request(Endpoints.productDetails(id: productId ?? 0))
-            .subscribe(onSuccess: { [weak self] (product:ProductModel) in
-                guard let self else {return}
-                productBehavior.accept(product)
-            },onFailure: {[weak self] error in
-                guard let self else {return}
-                errorRelay.accept(error.localizedDescription)
+            .subscribe(onNext: { [weak self] (product: ProductModel) in
+                // Handle the received data
+                self?.productBehavior.accept(product)
+            }, onError: { [weak self] error in
+                // Handle any error that occurs
+                self?.errorRelay.accept(error.localizedDescription)
+            }, onCompleted: {
+                // Optionally handle completion
+            }, onDisposed: {
+                // Optionally handle disposal
             }).disposed(by: disposeBag)
+    }
+
+    
+    func dismissProductDetails() {
+        coordinator?.dismissProductDetails()
     }
     
 }

@@ -29,6 +29,9 @@ final class ProductDetailsCoordinator:Coordinator {
         navigationController.pushViewController(productDetailsVC, animated: true)
     }
     
+    func dismissProductDetails(){
+        navigationController.popViewController(animated: true)
+    }
 
 
     

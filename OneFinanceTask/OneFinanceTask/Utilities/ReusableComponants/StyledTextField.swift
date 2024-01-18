@@ -30,7 +30,7 @@ class StyledTextField: UITextField {
     func setupTextFieldStyles() {
         // Apply your styles here
         self.borderStyle = .none
-        self.textColor = .black
+        self.textColor = .label
 //        self.layer.borderColor = Colors.borderColor?.cgColor
 //        self.layer.cornerRadius = 10
 //        self.layer.borderWidth = 0.25

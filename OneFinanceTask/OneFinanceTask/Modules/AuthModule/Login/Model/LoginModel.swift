@@ -10,35 +10,27 @@ import Foundation
 // MARK: - LoginModel
 
 struct LoginModel: Codable {
-    let success: Bool?
-    let responseCode: Int?
-    let message: String?
-    let data: UserData?
+    let token:String?
 
     enum CodingKeys: String, CodingKey {
-        case success
-        case responseCode = "response_code"
-        case message, data
+        case token
     }
 }
 
-// MARK: - DataClass
-struct UserData: Codable {
-    var id: Int?
-    var name, email, phone: String?
-    var image: String?
-    var type, status: Int?
-    var balance: String?
-    var addresses: [AddressModel]?
-    var token: String?
+struct UserData:Codable{
+    
+    
+    var token : String?
+    var id : Int?
+    var name : String?
+    
+    init(token: String? = nil, id: Int? = nil, name: String? = nil) {
+        self.token = token
+        self.id = id
+        self.name = name
+    }
+    
+    init(){}
 }
 
-// MARK: - Address
-struct AddressModel: Codable {
-    let id: Int?
-    let lat, lng: String?
-    let address: String?
-    let street, building, apartment: String?
-    let floor, name: String?
-}
 

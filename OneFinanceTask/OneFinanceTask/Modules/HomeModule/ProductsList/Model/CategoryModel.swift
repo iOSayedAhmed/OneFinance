@@ -8,7 +8,13 @@
 import Foundation
 //
 struct CategoryModel:Codable {
-    
     let title:String?
 }
 
+extension CategoryModel :DropDownItemType {
+    var itemTitle: String {
+        self.title ?? ""
+    }
+    
+    
+}
