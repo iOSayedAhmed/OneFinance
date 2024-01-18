@@ -20,8 +20,17 @@ class HomeVC: UIViewController {
     
     @IBOutlet weak var categoryCollectionView: UICollectionView!
     
+    let addProductButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(named: "plus")?.withRenderingMode(.alwaysOriginal), for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    
     private let homeViewModel:HomeViewModel!
     private let disposeBag = DisposeBag()
+    
     
     //MARK: - View Lifecycle
     override func viewDidLoad() {
@@ -54,8 +63,20 @@ class HomeVC: UIViewController {
     private func setupView(){
         homeViewModel.retriveUserData()
         self.title = "Home"
-//        self.navigationController?.navigationBar.prefersLargeTitles = true
     }
+    
+    private func setupAddProductButton(){
+        view.addSubview(addProductButton)
+        NSLayoutConstraint.activate([
+            addProductButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            addProductButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            addProductButton.widthAnchor.constraint(equalToConstant: 60),
+            addProductButton.heightAnchor.constraint(equalToConstant: 60)
+        ])
+        addProductButton.addTarget(self, action: #selector(addProductButtonTapped), for: .touchUpInside)
+    }
+    
+  
     
     private func setupNavigationBar(){
         // Create images
@@ -85,7 +106,7 @@ class HomeVC: UIViewController {
     
     private func generateCollectionLayout() -> UICollectionViewCompositionalLayout {
         return UICollectionViewCompositionalLayout { [weak self] (section, env) -> NSCollectionLayoutSection? in
-
+            guard let self else {return nil}
             switch section {
             case 0 :
                 return CollectionViewLayouts.shared.createProductCellLayout()
@@ -97,6 +118,7 @@ class HomeVC: UIViewController {
     
     private func generateCategoryCollectionLayout() -> UICollectionViewCompositionalLayout {
         return UICollectionViewCompositionalLayout { [weak self] (section, env) -> NSCollectionLayoutSection? in
+            guard let self else {return nil}
 
             switch section {
             case 0 :
@@ -118,7 +140,8 @@ class HomeVC: UIViewController {
         }.disposed(by: disposeBag)
         
         homeViewModel.errorRelay.subscribe(onNext: { [weak self] errorMessage in
-            self?.handleError(errorMessage)
+            guard let self else {return}
+            self.handleError(errorMessage)
         }).disposed(by: disposeBag)
         
         
@@ -128,15 +151,10 @@ class HomeVC: UIViewController {
         ToastManager.shared.showToast(message: errorMessage, type: .error, view: self.view)
     }
     
-    
-    
-    
-   
-    // Add the custom view to the stack view
-    private func addCustomViewToStack() {
-        
+    @objc private func addProductButtonTapped() {
+        // Handle the button tap
+        print("Add Product button tapped")
     }
-    
     
     @objc private func didTapCartButton() {
         // Handle Cart tap
@@ -150,27 +168,4 @@ class HomeVC: UIViewController {
     
 }
 
-//extension HomeVC : UICollectionViewDataSource,UICollectionViewDelegate {
-//   
-//    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-//      
-//            return 60
-//        
-//    }
-//    
-//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-//      
-//            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "\(ProductCollectionViewCell.self)", for: indexPath) as? ProductCollectionViewCell else {fatalError("Unable deque cell...")}
-//        if indexPath.item % 2 == 0{
-//            cell.setupCell(from: ProductModel(id: 1, title: "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops", description: "dsds", image: "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg", price: 109.87, rating: .init(rate: 4.3, count: 123)))
-//        }else {
-//            cell.setupCell(from: ProductModel(id: 1, title: "Mens Casual Premium Slim Fit T-Shirts", description: "dsds", image: "https://fakestoreapi.com/img/71-3HjGNDUL._AC_SY879._SX._UX._SY._UY_.jpg", price: 109.87, rating: .init(rate: 4.3, count: 123)))
-//        }
-//        
-//        return cell
-//        
-//      
-//    }
-//    
-//    
-//}
+
