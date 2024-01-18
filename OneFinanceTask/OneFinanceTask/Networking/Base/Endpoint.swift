@@ -21,28 +21,28 @@ protocol Endpoint:URLRequestConvertible {
 enum Endpoints: Endpoint {
         
     case login(parameters:Parameters)
-    case register(Parameters:Parameters)
-    case homeCategory
-    case homePopular(Parameters:Parameters)
-    case homeTrending(Parameters:Parameters)
+    case allProducts
+    case productDetails(id:Int)
+    case addProduct(parameters:Parameters)
+    case allCategories
 
     
     var baseURL:URL {
-        return URL(string: MyCashAPIURLs.baseUrl)!
+        return URL(string: APIURLs.baseUrl)!
     }
     
     var path:String {
         switch self {
         case .login:
-            return MYCashAPIPaths.login
-        case .register:
-            return MYCashAPIPaths.clientRegister
-        case .homeCategory:
-            return MYCashAPIPaths.homeCategory
-        case .homePopular:
-            return MYCashAPIPaths.homePopular
-        case .homeTrending:
-            return MYCashAPIPaths.hometrTrending
+            return URLPaths.login
+        case .allProducts:
+            return URLPaths.allProducts
+        case .productDetails:
+            return URLPaths.productsDetails
+        case .addProduct:
+            return URLPaths.addProduct
+        case .allCategories:
+            return URLPaths.allCategories
         }
     }
     
@@ -50,13 +50,13 @@ enum Endpoints: Endpoint {
         switch self {
         case .login:
             return .post
-        case .register:
+        case .addProduct:
             return .post
-        case .homeCategory:
+        case .productDetails:
             return .get
-        case .homePopular:
+        case .allProducts:
             return .get
-        case .homeTrending:
+        case .allCategories:
             return .get
         }
     }
@@ -65,20 +65,21 @@ enum Endpoints: Endpoint {
         switch self {
         case .login(let params):
             return params
-        case .register(Parameters: let Params):
-            return Params
-        case .homeCategory:
+        case .allProducts:
             return nil
-        case .homePopular(Parameters: let params):
+        case .productDetails:
+            return nil
+        case .allCategories:
+            return nil
+        case .addProduct(let params):
             return params
-        case .homeTrending(Parameters: let params):
-            return params
+        
         }
     }
     
     var headers: HTTPHeaders? {
         switch self {
-        case .login , .register ,.homeCategory,.homePopular, .homeTrending:
+        case .login , .allProducts ,.addProduct,.productDetails,.allCategories:
             return HTTPHeaders(["Accept":"application/json",
                                 "lang":"en",
                                ])
@@ -93,7 +94,7 @@ enum Endpoints: Endpoint {
             request.method  = method
 
         switch self {
-        case .login , .register, .homeCategory, .homePopular, .homeTrending:
+        case .login , .allProducts ,.addProduct,.productDetails,.allCategories:
             request = try URLEncoding.default.encode(request,with: parameters)
         }
         print(request)
