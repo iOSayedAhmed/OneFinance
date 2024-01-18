@@ -60,9 +60,62 @@ class HomeVC: UIViewController {
     
     // MARK: - Methods
     
+   
+    
+   
+    
+    private func bindingViewModel(){
+        //get all Category
+        homeViewModel.categoryObservabele.bind(to: categoryCollectionView.rx.items(cellIdentifier: "\(CategoryCollectionViewCell.self)", cellType: CategoryCollectionViewCell.self)){index , model , cell in
+            cell.setupCell(title: model.title ?? "")
+        }.disposed(by: disposeBag)
+        
+        homeViewModel.productObservabele.bind(to: collectionView.rx.items(cellIdentifier: "\(ProductCollectionViewCell.self)", cellType: ProductCollectionViewCell.self)){ index , model , cell in
+            cell.setupCell(from: model)
+        }.disposed(by: disposeBag)
+        
+        homeViewModel.errorRelay.subscribe(onNext: { [weak self] errorMessage in
+            guard let self else {return}
+            self.handleError(errorMessage)
+        }).disposed(by: disposeBag)
+        
+        
+        categoryCollectionView.rx.modelSelected(CategoryModel.self).subscribe { model in
+            print(model.element?.title)
+        }.disposed(by: disposeBag)
+        
+    }
+    
+    private func handleError(_ errorMessage: String) {
+        ToastManager.shared.showToast(message: errorMessage, type: .error, view: self.view)
+    }
+    
+    @objc private func addProductButtonTapped() {
+        // Handle the button tap
+        print("Add Product button tapped")
+    }
+    
+    @objc private func didTapCartButton() {
+        // Handle Cart tap
+        print("Go To Cart View")
+    }
+    
+    @objc private func didTapMenuButton() {
+        // Handle Menu tap
+        print("Go To Menu View")
+    }
+    
+}
+
+
+//MARK: Methods For handling UI
+extension HomeVC {
+    
     private func setupView(){
         homeViewModel.retriveUserData()
-        self.title = "Home"
+        setupNavigationBar()
+        setupAddProductButton()
+        setupCustomNavigationBarItem()
     }
     
     private func setupAddProductButton(){
@@ -76,6 +129,40 @@ class HomeVC: UIViewController {
         addProductButton.addTarget(self, action: #selector(addProductButtonTapped), for: .touchUpInside)
     }
     
+    private func setupCustomNavigationBarItem() {
+           // Create ImageView
+           let imageView = UIImageView(image: UIImage(named: "Avatar"))
+           imageView.contentMode = .scaleAspectFit
+           imageView.translatesAutoresizingMaskIntoConstraints = false
+
+           // Create Label
+           let label = UILabel()
+           label.text = "Hello, ELSayed!"
+           label.textColor = .button
+        label.font = .systemFont(ofSize: 15, weight: .bold)
+           label.translatesAutoresizingMaskIntoConstraints = false
+
+           // Create Container View
+           let containerView = UIView()
+           containerView.addSubview(imageView)
+           containerView.addSubview(label)
+
+           // Set constraints
+           NSLayoutConstraint.activate([
+               imageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+               imageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+               imageView.heightAnchor.constraint(equalToConstant: 30),
+               imageView.widthAnchor.constraint(equalToConstant: 30),
+
+               label.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: 8),
+               label.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+               label.centerYAnchor.constraint(equalTo: containerView.centerYAnchor)
+           ])
+
+           // Create UIBarButtonItem
+           let barButtonItem = UIBarButtonItem(customView: containerView)
+           self.navigationItem.leftBarButtonItem = barButtonItem
+       }
   
     
     private func setupNavigationBar(){
@@ -128,44 +215,4 @@ class HomeVC: UIViewController {
             }
         }
     }
-    
-    private func bindingViewModel(){
-        //get all Category
-        homeViewModel.categoryObservabele.bind(to: categoryCollectionView.rx.items(cellIdentifier: "\(CategoryCollectionViewCell.self)", cellType: CategoryCollectionViewCell.self)){index , model , cell in
-            cell.setupCell(title: model.title ?? "")
-        }.disposed(by: disposeBag)
-        
-        homeViewModel.productObservabele.bind(to: collectionView.rx.items(cellIdentifier: "\(ProductCollectionViewCell.self)", cellType: ProductCollectionViewCell.self)){ index , model , cell in
-            cell.setupCell(from: model)
-        }.disposed(by: disposeBag)
-        
-        homeViewModel.errorRelay.subscribe(onNext: { [weak self] errorMessage in
-            guard let self else {return}
-            self.handleError(errorMessage)
-        }).disposed(by: disposeBag)
-        
-        
-    }
-    
-    private func handleError(_ errorMessage: String) {
-        ToastManager.shared.showToast(message: errorMessage, type: .error, view: self.view)
-    }
-    
-    @objc private func addProductButtonTapped() {
-        // Handle the button tap
-        print("Add Product button tapped")
-    }
-    
-    @objc private func didTapCartButton() {
-        // Handle Cart tap
-        print("Go To Cart View")
-    }
-    
-    @objc private func didTapMenuButton() {
-        // Handle Menu tap
-        print("Go To Menu View")
-    }
-    
 }
-
-
