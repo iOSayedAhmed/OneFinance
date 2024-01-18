@@ -29,26 +29,15 @@ final class AppCoordinator:Coordinator {
     func start() {
         window.rootViewController = navigationController
         window.makeKeyAndVisible()
-        if isUserLoggedIn() {
-            startHomeCoordinator()
-        }else{
-            startLoginCoordinator()
-        }
+        startSplashScreen()
+    }
+    func startSplashScreen(){
+        let splashCoordinator = SplashScreenCoordinator(navigationController: navigationController)
+        childCoordinators.append(splashCoordinator)
+        splashCoordinator.start()
     }
     
-    
-    func startLoginCoordinator(){
-        let splashScreenCoordinator = LoginCoordinator(navigationController: navigationController)
-        childCoordinators.append(splashScreenCoordinator)
-        splashScreenCoordinator.start()
-    }
-    
-    
-    func startHomeCoordinator(){
-        let homeCoordinator = HomeCoordinator(navigationController: navigationController,userData: UserData())
-        childCoordinators.append(homeCoordinator)
-        homeCoordinator.start()
-    }
+   
     
  
     func isUserLoggedIn() -> Bool {
