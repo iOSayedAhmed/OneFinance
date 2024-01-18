@@ -59,11 +59,8 @@ class HomeVC: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    
     // MARK: - Methods
-    
-   
-    
-   
     
     private func bindingViewModel(){
         //get all Category
@@ -117,7 +114,6 @@ class HomeVC: UIViewController {
     
     @objc private func addProductButtonTapped() {
         // Handle the button tap
-        print("Add Product button tapped")
         homeViewModel.showAddProduct()
     }
     

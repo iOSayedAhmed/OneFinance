@@ -31,6 +31,8 @@ final class ProductDetailsCoordinator:Coordinator {
     
     func dismissProductDetails(){
         navigationController.popViewController(animated: true)
+        navigationController.navigationBar.isHidden = false
+
     }
 
 

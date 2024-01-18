@@ -48,6 +48,7 @@ class ProductDetailsVC: UIViewController {
     
     private func setupView(){
         navigationController?.navigationBar.isHidden = true
+        navigationController?.navigationBar.tintColor = .clear
     }
     private func setData(from product:ProductModel){
         imageView.setImageWithLoading(url: product.image ?? "")
