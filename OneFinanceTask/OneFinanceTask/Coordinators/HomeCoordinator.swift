@@ -28,7 +28,15 @@ final class HomeCoordinator:Coordinator {
         navigationController.setViewControllers([homeVC], animated: true)
     }
     
-
+    func showProductDetails(with productId:Int){
+        let productDetailsCoordinator = ProductDetailsCoordinator(navigationController: navigationController, productId: productId)
+        productDetailsCoordinator.start()
+    }
+    
+    func showAddProduct(with categories:[CategoryModel]){
+        let addProductCoordinator = AddProductCoordinator(navigationController: navigationController, categories: categories)
+        addProductCoordinator.start()
+    }
 
     
 }

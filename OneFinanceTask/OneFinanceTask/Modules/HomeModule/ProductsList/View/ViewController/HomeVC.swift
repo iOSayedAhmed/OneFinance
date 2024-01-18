@@ -17,8 +17,9 @@ class HomeVC: UIViewController {
     
     @IBOutlet weak var mainStackView: UIStackView!
     @IBOutlet weak var collectionView: UICollectionView!
-    
     @IBOutlet weak var categoryCollectionView: UICollectionView!
+    @IBOutlet weak var searchTextField: UITextField!
+    
     
     let addProductButton: UIButton = {
         let button = UIButton(type: .system)
@@ -67,7 +68,9 @@ class HomeVC: UIViewController {
     private func bindingViewModel(){
         //get all Category
         homeViewModel.categoryObservabele.bind(to: categoryCollectionView.rx.items(cellIdentifier: "\(CategoryCollectionViewCell.self)", cellType: CategoryCollectionViewCell.self)){index , model , cell in
-            cell.setupCell(title: model.title ?? "")
+            print(model)
+            cell.setupCell(title: model.title ?? "",index:index)
+            
         }.disposed(by: disposeBag)
         
         homeViewModel.productObservabele.bind(to: collectionView.rx.items(cellIdentifier: "\(ProductCollectionViewCell.self)", cellType: ProductCollectionViewCell.self)){ index , model , cell in
@@ -80,10 +83,32 @@ class HomeVC: UIViewController {
         }).disposed(by: disposeBag)
         
         
-        categoryCollectionView.rx.modelSelected(CategoryModel.self).subscribe { model in
-            print(model.element?.title)
+        categoryCollectionView.rx.modelSelected(CategoryModel.self).subscribe {[weak self] model in
+            print(model)
+            guard let self , let categoryName = model.element?.title else {return}
+            if categoryName == "All" {
+                homeViewModel.getAllProducts()
+            }else{
+                homeViewModel.getProductsByCategory(category: categoryName)
+
+            }
         }.disposed(by: disposeBag)
         
+        
+        collectionView.rx.modelSelected(ProductModel.self).subscribe {[weak self] model in
+            guard let self , let productId = model.element?.id  else {return}
+            print(model.element?.id ?? 0)
+            homeViewModel.showProductDetails(with: productId)
+        }.disposed(by: disposeBag)
+        
+        //search
+        searchTextField.rx.text.orEmpty
+            .debounce(RxTimeInterval.milliseconds(300), scheduler: MainScheduler.instance)
+            .distinctUntilChanged()
+            .subscribe(onNext: { [weak self] query in
+                self?.homeViewModel.searchProducts(with: query)
+            }).disposed(by: disposeBag)
+
     }
     
     private func handleError(_ errorMessage: String) {
@@ -93,6 +118,7 @@ class HomeVC: UIViewController {
     @objc private func addProductButtonTapped() {
         // Handle the button tap
         print("Add Product button tapped")
+        homeViewModel.showAddProduct()
     }
     
     @objc private func didTapCartButton() {
@@ -112,6 +138,7 @@ class HomeVC: UIViewController {
 extension HomeVC {
     
     private func setupView(){
+        navigationController?.navigationBar.isHidden = false
         homeViewModel.retriveUserData()
         setupNavigationBar()
         setupAddProductButton()

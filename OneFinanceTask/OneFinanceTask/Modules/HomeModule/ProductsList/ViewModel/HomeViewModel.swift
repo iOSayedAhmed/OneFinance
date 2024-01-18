@@ -15,10 +15,15 @@ protocol HomeViewModelProtocol{
     func retriveUserData()
     func getCategory()
     func getAllProducts()
+    func showProductDetails(with productId:Int)
+    func getProductsByCategory(category:String)
+    func showAddProduct()
+    func searchProducts(with query: String)
+    
 }
 
 final class HomeViewModel:HomeViewModelProtocol {
-   
+    
     
    
     private var coordinator:HomeCoordinator?
@@ -26,6 +31,7 @@ final class HomeViewModel:HomeViewModelProtocol {
             var userData:UserData?
     
     private let disposeBag = DisposeBag()
+    private var  categoryModels = [CategoryModel]()
     private let categoryBehavior:BehaviorRelay<[CategoryModel]> = BehaviorRelay(value: [])
     private let productBehavior : BehaviorRelay<[ProductModel]> = BehaviorRelay(value: [])
     
@@ -53,24 +59,62 @@ final class HomeViewModel:HomeViewModelProtocol {
     
     func getCategory() {
         networkService?.request(Endpoints.allCategories)
-            .subscribe(onSuccess: { [weak self] (categoryModel: [String]) in
-              //  guard let categories = categoryModel else {return}
-                var categoryModels = categoryModel.map { CategoryModel(title: $0)}
+            .subscribe(onNext: { [weak self] (categoryModel: [String]) in
+                guard let self else {return}
+                 categoryModels  = categoryModel.map { CategoryModel(title: $0) }
                 let updatedCategory = CategoryModel(title: "All")
                 categoryModels.insert(updatedCategory, at: 0)
-                self?.categoryBehavior.accept(categoryModels )
-            }, onFailure: { [weak self] error in
+                self.categoryBehavior.accept(categoryModels)
+            }, onError: { [weak self] error in
                 self?.errorRelay.accept(error.localizedDescription)
             }).disposed(by: disposeBag)
     }
+
     
     func getAllProducts() {
         networkService?.request(Endpoints.allProducts)
-            .subscribe(onSuccess: { [weak self] (products:[ProductModel]) in
+            .subscribe(onNext: { [weak self] (products: [ProductModel]) in
                 self?.productBehavior.accept(products)
-            },onFailure: {[weak self] error in
+            }, onError: { [weak self] error in
                 self?.errorRelay.accept(error.localizedDescription)
             }).disposed(by: disposeBag)
     }
+
     
+    func showProductDetails(with productId:Int) {
+        coordinator?.showProductDetails(with: productId)
+    }
+    func showAddProduct(){
+        coordinator?.showAddProduct(with:categoryModels)
+    }
+    
+    func getProductsByCategory(category: String) {
+        networkService?.request(Endpoints.productsByCategory(category: category))
+            .subscribe(onNext: { [weak self] (products: [ProductModel]) in
+                // Handle the received data
+                self?.productBehavior.accept(products)
+            }, onError: { [weak self] error in
+                // Handle any error that occurs
+                self?.errorRelay.accept(error.localizedDescription)
+            }, onCompleted: {
+                // Optionally handle completion
+            }, onDisposed: {
+                // Optionally handle disposal
+            }).disposed(by: disposeBag)
+    }
+
+    
+    func searchProducts(with query: String) {
+        guard !query.isEmpty else {
+            getAllProducts()
+        return
+        }
+        
+        let filteredProducts = productBehavior.value.filter {
+            $0.title?.lowercased().contains(query.lowercased()) ?? false
+        }
+        
+        productBehavior.accept(filteredProducts)
+    }
+
 }
