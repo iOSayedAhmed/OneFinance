@@ -11,7 +11,7 @@
     - Animated splash screen.
     - Signup Screen
 
-## technology
+## Technology
 - MVVM-Coordinator
 - RxSwift
 - UIKit (Xib)
