@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="Stack View standard spacing" minToolsVersion="9.0"/>
@@ -11,6 +12,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="HomeVC" customModule="OneFinanceTask" customModuleProvider="target">
             <connections>
+                <outlet property="categoryCollectionView" destination="72r-OU-FDh" id="apB-us-tdy"/>
                 <outlet property="collectionView" destination="P3D-ea-ukX" id="mtj-z8-AGR"/>
                 <outlet property="mainStackView" destination="o9W-Va-qVv" id="5KW-TQ-0S7"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -25,10 +27,10 @@
                     <rect key="frame" x="0.0" y="59" width="393" height="759"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="o9W-Va-qVv">
-                            <rect key="frame" x="0.0" y="53" width="393" height="706"/>
+                            <rect key="frame" x="0.0" y="122" width="393" height="637"/>
                             <subviews>
                                 <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="P3D-ea-ukX">
-                                    <rect key="frame" x="0.0" y="0.0" width="393" height="706"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="393" height="637"/>
                                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                     <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Lcx-ug-gIr">
                                         <size key="itemSize" width="128" height="128"/>
@@ -40,27 +42,27 @@
                             </subviews>
                         </stackView>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="YeP-rW-gWj">
-                            <rect key="frame" x="0.0" y="0.0" width="393" height="53"/>
+                            <rect key="frame" x="0.0" y="0.0" width="393" height="112"/>
                             <subviews>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Zxt-Ow-R9c">
-                                    <rect key="frame" x="0.0" y="0.0" width="393" height="53"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="393" height="55"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="r9l-Ao-N3b">
-                                            <rect key="frame" x="20" y="0.0" width="353" height="53"/>
+                                            <rect key="frame" x="20" y="0.0" width="353" height="55"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="1Zt-ti-1XH">
-                                                    <rect key="frame" x="0.0" y="0.0" width="353" height="53"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="353" height="55"/>
                                                     <subviews>
                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c8C-bL-VS7" customClass="InnerShadowView" customModule="OneFinanceTask" customModuleProvider="target">
-                                                            <rect key="frame" x="9.3333333333333428" y="0.0" width="334.33333333333326" height="53"/>
+                                                            <rect key="frame" x="9.3333333333333428" y="0.0" width="334.33333333333326" height="55"/>
                                                             <subviews>
                                                                 <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Search ..." textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="WJJ-uz-7p6">
-                                                                    <rect key="frame" x="41" y="5" width="285.33333333333331" height="43"/>
+                                                                    <rect key="frame" x="41" y="5" width="285.33333333333331" height="45"/>
                                                                     <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="16"/>
                                                                     <textInputTraits key="textInputTraits"/>
                                                                 </textField>
                                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="searchIcon" translatesAutoresizingMaskIntoConstraints="NO" id="6MP-E2-37M">
-                                                                    <rect key="frame" x="8.0000000000000036" y="14" width="24.999999999999996" height="25"/>
+                                                                    <rect key="frame" x="8.0000000000000036" y="15" width="24.999999999999996" height="25"/>
                                                                     <constraints>
                                                                         <constraint firstAttribute="width" constant="25" id="f4G-cM-pWQ"/>
                                                                         <constraint firstAttribute="width" secondItem="6MP-E2-37M" secondAttribute="height" multiplier="1:1" id="g1I-CV-F8H"/>
@@ -92,7 +94,7 @@
                                             </subviews>
                                         </stackView>
                                     </subviews>
-                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <constraints>
                                         <constraint firstItem="r9l-Ao-N3b" firstAttribute="leading" secondItem="Zxt-Ow-R9c" secondAttribute="leading" constant="20" id="UKQ-T9-0xm"/>
                                         <constraint firstItem="r9l-Ao-N3b" firstAttribute="top" secondItem="Zxt-Ow-R9c" secondAttribute="top" id="eV8-H2-b1r"/>
@@ -100,6 +102,16 @@
                                         <constraint firstAttribute="trailing" secondItem="r9l-Ao-N3b" secondAttribute="trailing" constant="20" id="qPM-nq-Ocs"/>
                                     </constraints>
                                 </view>
+                                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="72r-OU-FDh">
+                                    <rect key="frame" x="0.0" y="55" width="393" height="57"/>
+                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                    <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="ekM-YJ-Xjt">
+                                        <size key="itemSize" width="128" height="128"/>
+                                        <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                        <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                        <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                    </collectionViewFlowLayout>
+                                </collectionView>
                             </subviews>
                         </stackView>
                     </subviews>
@@ -108,11 +120,12 @@
                     <constraints>
                         <constraint firstItem="o9W-Va-qVv" firstAttribute="leading" secondItem="UqL-ku-23U" secondAttribute="leading" id="7Yh-SQ-a0e"/>
                         <constraint firstAttribute="bottom" secondItem="o9W-Va-qVv" secondAttribute="bottom" id="HnY-WI-2bU"/>
-                        <constraint firstItem="o9W-Va-qVv" firstAttribute="top" secondItem="YeP-rW-gWj" secondAttribute="bottom" id="Jb0-tn-JzI"/>
+                        <constraint firstItem="o9W-Va-qVv" firstAttribute="top" secondItem="YeP-rW-gWj" secondAttribute="bottom" constant="10" id="Jb0-tn-JzI"/>
                         <constraint firstItem="YeP-rW-gWj" firstAttribute="leading" secondItem="UqL-ku-23U" secondAttribute="leading" id="KxO-QX-oxf"/>
-                        <constraint firstItem="c8C-bL-VS7" firstAttribute="height" secondItem="UqL-ku-23U" secondAttribute="height" multiplier="0.07" id="LGW-22-Pju"/>
                         <constraint firstAttribute="trailing" secondItem="YeP-rW-gWj" secondAttribute="trailing" id="MTk-JT-3Tc"/>
                         <constraint firstItem="c8C-bL-VS7" firstAttribute="width" secondItem="UqL-ku-23U" secondAttribute="width" multiplier="0.85" id="U0a-u2-w3h"/>
+                        <constraint firstItem="Zxt-Ow-R9c" firstAttribute="height" secondItem="UqL-ku-23U" secondAttribute="height" multiplier="0.0724638" id="dIZ-0v-fq0"/>
+                        <constraint firstItem="72r-OU-FDh" firstAttribute="height" secondItem="UqL-ku-23U" secondAttribute="height" multiplier="0.075" id="dji-RY-SqV"/>
                         <constraint firstItem="YeP-rW-gWj" firstAttribute="top" secondItem="UqL-ku-23U" secondAttribute="top" id="fB1-kq-L1L"/>
                         <constraint firstAttribute="trailing" secondItem="o9W-Va-qVv" secondAttribute="trailing" id="kkS-Vi-jpb"/>
                     </constraints>

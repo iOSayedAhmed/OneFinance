@@ -18,6 +18,8 @@ class HomeVC: UIViewController {
     @IBOutlet weak var mainStackView: UIStackView!
     @IBOutlet weak var collectionView: UICollectionView!
     
+    @IBOutlet weak var categoryCollectionView: UICollectionView!
+    
     private let homeViewModel:HomeViewModel!
     private let disposeBag = DisposeBag()
     
@@ -27,9 +29,9 @@ class HomeVC: UIViewController {
         setupView()
         setupNavigationBar()
         setupCollectionView()
-        getHomeCategory()
-        getHomePopular()
-        getHomeTrending()
+        bindingViewModel()
+        homeViewModel.getCategory()
+        homeViewModel.getAllProducts()
         
     }
     
@@ -52,7 +54,7 @@ class HomeVC: UIViewController {
     private func setupView(){
         homeViewModel.retriveUserData()
         self.title = "Home"
-        self.navigationController?.navigationBar.prefersLargeTitles = true
+//        self.navigationController?.navigationBar.prefersLargeTitles = true
     }
     
     private func setupNavigationBar(){
@@ -75,13 +77,25 @@ class HomeVC: UIViewController {
     
     
     private func setupCollectionView(){
-        collectionView.register(UINib(nibName: "\(CategoryCollectionViewCell.self)", bundle: nil), forCellWithReuseIdentifier: "\(CategoryCollectionViewCell.self)")
+        categoryCollectionView.register(UINib(nibName: "\(CategoryCollectionViewCell.self)", bundle: nil), forCellWithReuseIdentifier: "\(CategoryCollectionViewCell.self)")
+        collectionView.register(UINib(nibName: "\(ProductCollectionViewCell.self)", bundle: nil), forCellWithReuseIdentifier: "\(ProductCollectionViewCell.self)")
         collectionView.collectionViewLayout = generateCollectionLayout()
-        collectionView.delegate = self
-        collectionView.dataSource = self
+        categoryCollectionView.collectionViewLayout = generateCategoryCollectionLayout()
     }
     
     private func generateCollectionLayout() -> UICollectionViewCompositionalLayout {
+        return UICollectionViewCompositionalLayout { [weak self] (section, env) -> NSCollectionLayoutSection? in
+
+            switch section {
+            case 0 :
+                return CollectionViewLayouts.shared.createProductCellLayout()
+            default:
+                return nil
+            }
+        }
+    }
+    
+    private func generateCategoryCollectionLayout() -> UICollectionViewCompositionalLayout {
         return UICollectionViewCompositionalLayout { [weak self] (section, env) -> NSCollectionLayoutSection? in
 
             switch section {
@@ -93,18 +107,31 @@ class HomeVC: UIViewController {
         }
     }
     
-    private func getHomeCategory(){
+    private func bindingViewModel(){
+        //get all Category
+        homeViewModel.categoryObservabele.bind(to: categoryCollectionView.rx.items(cellIdentifier: "\(CategoryCollectionViewCell.self)", cellType: CategoryCollectionViewCell.self)){index , model , cell in
+            cell.setupCell(title: model.title ?? "")
+        }.disposed(by: disposeBag)
+        
+        homeViewModel.productObservabele.bind(to: collectionView.rx.items(cellIdentifier: "\(ProductCollectionViewCell.self)", cellType: ProductCollectionViewCell.self)){ index , model , cell in
+            cell.setupCell(from: model)
+        }.disposed(by: disposeBag)
+        
+        homeViewModel.errorRelay.subscribe(onNext: { [weak self] errorMessage in
+            self?.handleError(errorMessage)
+        }).disposed(by: disposeBag)
+        
         
     }
     
-    private func getHomePopular(){
-        
-       
+    private func handleError(_ errorMessage: String) {
+        ToastManager.shared.showToast(message: errorMessage, type: .error, view: self.view)
     }
     
-    private func getHomeTrending(){
-       
-    }
+    
+    
+    
+   
     // Add the custom view to the stack view
     private func addCustomViewToStack() {
         
@@ -123,32 +150,27 @@ class HomeVC: UIViewController {
     
 }
 
-extension HomeVC : UICollectionViewDataSource,UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        switch section {
-        case 0 : return 7
-        case 1: return 8
-        default:
-            return 0
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        switch indexPath.section {
-            
-        case 0 :
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "\(CategoryCollectionViewCell.self)", for: indexPath) as? CategoryCollectionViewCell else {fatalError("Unable deque cell...")}
-            if indexPath.item % 2 == 0{
-                cell.setupCell(title: "heldsdsdsdsdsddssd")
-            }else {
-                cell.setupCell(title: "hel")
-            }
-            
-             return cell
-        default:
-            return UICollectionViewCell()
-        }
-    }
-    
-    
-}
+//extension HomeVC : UICollectionViewDataSource,UICollectionViewDelegate {
+//   
+//    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+//      
+//            return 60
+//        
+//    }
+//    
+//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+//      
+//            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "\(ProductCollectionViewCell.self)", for: indexPath) as? ProductCollectionViewCell else {fatalError("Unable deque cell...")}
+//        if indexPath.item % 2 == 0{
+//            cell.setupCell(from: ProductModel(id: 1, title: "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops", description: "dsds", image: "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg", price: 109.87, rating: .init(rate: 4.3, count: 123)))
+//        }else {
+//            cell.setupCell(from: ProductModel(id: 1, title: "Mens Casual Premium Slim Fit T-Shirts", description: "dsds", image: "https://fakestoreapi.com/img/71-3HjGNDUL._AC_SY879._SX._UX._SY._UY_.jpg", price: 109.87, rating: .init(rate: 4.3, count: 123)))
+//        }
+//        
+//        return cell
+//        
+//      
+//    }
+//    
+//    
+//}
