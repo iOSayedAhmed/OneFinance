@@ -25,6 +25,7 @@ enum Endpoints: Endpoint {
     case productDetails(id:Int)
     case addProduct(parameters:Parameters)
     case allCategories
+    case productsByCategory(category:String)
 
     
     var baseURL:URL {
@@ -37,12 +38,14 @@ enum Endpoints: Endpoint {
             return URLPaths.login
         case .allProducts:
             return URLPaths.allProducts
-        case .productDetails:
-            return URLPaths.productsDetails
+        case .productDetails(let id):
+            return "\(URLPaths.productsDetails)/\(id)"
         case .addProduct:
             return URLPaths.addProduct
         case .allCategories:
-            return URLPaths.allCategories
+            return URLPaths.allCategories 
+        case .productsByCategory(let category):
+            return "\(URLPaths.productsByCategory)/\(category)"
         }
     }
     
@@ -58,6 +61,8 @@ enum Endpoints: Endpoint {
             return .get
         case .allCategories:
             return .get
+        case .productsByCategory:
+            return .get
         }
     }
     
@@ -71,6 +76,8 @@ enum Endpoints: Endpoint {
             return nil
         case .allCategories:
             return nil
+        case .productsByCategory:
+            return nil
         case .addProduct(let params):
             return params
         
@@ -79,7 +86,7 @@ enum Endpoints: Endpoint {
     
     var headers: HTTPHeaders? {
         switch self {
-        case .login , .allProducts ,.addProduct,.productDetails,.allCategories:
+        case .login , .allProducts ,.addProduct,.productDetails,.allCategories,.productsByCategory:
             return HTTPHeaders(["Accept":"application/json",
                                 "lang":"en",
                                ])
@@ -94,7 +101,7 @@ enum Endpoints: Endpoint {
             request.method  = method
 
         switch self {
-        case .login , .allProducts ,.addProduct,.productDetails,.allCategories:
+        case .login , .allProducts ,.addProduct,.productDetails,.allCategories,.productsByCategory:
             request = try URLEncoding.default.encode(request,with: parameters)
         }
         print(request)
