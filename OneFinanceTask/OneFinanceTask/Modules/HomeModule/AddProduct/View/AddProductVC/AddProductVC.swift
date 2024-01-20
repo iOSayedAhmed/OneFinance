@@ -24,7 +24,7 @@ class AddProductVC: UIViewController {
     @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
     
     
-    private let ViewModel:AddProductViewModel!
+    private let ViewModel:AddProductViewModel?
     private let disposeBag = DisposeBag()
     private var categoryName = ""
     
@@ -33,7 +33,7 @@ class AddProductVC: UIViewController {
         setupView()
         bindingViewModel()
         
-        print(ViewModel.categories)
+        print(ViewModel?.categories)
     }
 
     init(viewModel:AddProductViewModel,nibName:String) {
@@ -56,33 +56,35 @@ class AddProductVC: UIViewController {
     
     
     
+    
     private func bindingViewModel(){
         closeButton.rx.tap.subscribe {[weak self] _ in
             guard let self else {return}
-            ViewModel.dismissAddProduct()
+            ViewModel?.dismissAddProduct()
         }.disposed(by: disposeBag)
         
-        ViewModel.categoryBehaviorRelay
+        ViewModel?.categoryBehaviorRelay
             .observe(on: MainScheduler.instance)
             .bind { [weak self] categoty in
                 guard let self else { return }
 
                 setupMenuDropDown(sender: categoryButton,
                                   disposeBy: disposeBag,
-                                  items: categoty) { categoty in
+                                  items: categoty) {[weak self] categoty in
+                    guard let self else {return}
                     self.categoryName = categoty.title ?? ""
                     self.categoryButton.setTitle(categoty.title ?? "", for: .normal)
                     
                 }
             }.disposed(by: disposeBag)
         
-        ViewModel.isLoading.subscribe {[weak self] in
+        ViewModel?.isLoading.subscribe {[weak self] in
             guard let self else {return}
             $0 ? self.activityIndicator.startAnimating() : self.activityIndicator.stopAnimating()
         }
             .disposed(by: disposeBag)
 
-            ViewModel.addProductResult
+        ViewModel?.addProductResult
                 .observe(on: MainScheduler.instance)
                 .subscribe(onNext: { [weak self] productModel in
                     guard let self else {return}
@@ -91,7 +93,7 @@ class AddProductVC: UIViewController {
                         showMessage(typeMessage: .message, message:"Added Successfully")
                         DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
                             guard let self else {return}
-                            ViewModel.coordinator?.dismissAddProduct()
+                            ViewModel?.coordinator?.dismissAddProduct()
                         }
                     }else {
                         showMessage(typeMessage: .error, message: "some thing went wrong!")
@@ -122,7 +124,7 @@ class AddProductVC: UIViewController {
                     "category": categoryName
                 ]
                 
-                ViewModel.addProduct(parametrs: params)
+                ViewModel?.addProduct(parametrs: params)
             }
         }.disposed(by: disposeBag)
 
@@ -130,4 +132,12 @@ class AddProductVC: UIViewController {
         
     }
 
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        ViewModel?.didDisAppear()
+    }
+    
+    deinit {
+        print("\(AddProductVC.self) is deallocated")
+    }
 }

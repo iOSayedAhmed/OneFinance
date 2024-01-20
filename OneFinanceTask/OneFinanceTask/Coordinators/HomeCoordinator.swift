@@ -35,7 +35,18 @@ final class HomeCoordinator:Coordinator {
     
     func showAddProduct(with categories:[CategoryModel]){
         let addProductCoordinator = AddProductCoordinator(navigationController: navigationController, categories: categories)
+        addProductCoordinator.parentCoordinator = self
+        childCoordinators.append(addProductCoordinator)
         addProductCoordinator.start()
+    }
+    
+   
+    func childDidFinish(_ childCoordinator: Coordinator) {
+        if let index = childCoordinators.firstIndex(where: { coordinator in
+            return childCoordinator === coordinator
+        }){
+            childCoordinators.remove(at: index)
+        }
     }
 
     

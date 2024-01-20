@@ -9,12 +9,11 @@ import Foundation
 import UIKit
 final class AddProductCoordinator:Coordinator {
 
-   
-    
     private(set) var childCoordinators: [Coordinator] = []
     
     private let navigationController:UINavigationController
-    var parentCoordinator:Coordinator?
+    weak var parentCoordinator: HomeCoordinator?
+    
     private var categories:[CategoryModel]
     
     init(navigationController:UINavigationController,categories:[CategoryModel]){
@@ -32,8 +31,15 @@ final class AddProductCoordinator:Coordinator {
     
     func dismissAddProduct() {
         navigationController.dismiss(animated: true)
+        parentCoordinator?.childDidFinish(self)
     }
 
+    func didDisAppear(){
+        parentCoordinator?.childDidFinish(self)
+    }
 
     
+    deinit {
+        print(" Coordinator Deallocted")
+    }
 }

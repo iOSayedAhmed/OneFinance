@@ -18,7 +18,8 @@ final class AddProductViewModel:AddProductViewModelType {
     
     
     
-    var coordinator:AddProductCoordinator?
+    weak var coordinator: AddProductCoordinator?
+    
     var networkService:NetworkService?
     private let disposeBag = DisposeBag()
     var categories : [CategoryModel]?
@@ -63,6 +64,13 @@ final class AddProductViewModel:AddProductViewModelType {
             .disposed(by: disposeBag)
     }
     
+    func didDisAppear(){
+        coordinator?.didDisAppear()
+    }
     
+    
+    deinit {
+            print(" View Model Deallocted")
+    }
 }
 
