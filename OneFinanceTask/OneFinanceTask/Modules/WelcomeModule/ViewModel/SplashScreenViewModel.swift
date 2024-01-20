@@ -15,7 +15,7 @@ protocol SplashViewModelType {
 
 final class SplashViewModel :SplashViewModelType {
    
-    var coordinator:SplashScreenCoordinator?
+   weak var coordinator:SplashScreenCoordinator?
     let animationCompleted : BehaviorSubject<Bool> =  BehaviorSubject<Bool>(value: false)
 
     func animationDidFinish() {
